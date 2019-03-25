@@ -1,0 +1,78 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+
+namespace Vapor
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Dictionary<string, string> gameDLC = new Dictionary<string, string>();
+            Dictionary<string, decimal> game = new Dictionary<string, decimal>();
+            Dictionary<string, decimal> gameNoDLC = new Dictionary<string, decimal>();
+            List<string> input = Regex.Split(Console.ReadLine(), @", ").ToList();
+
+            for (int i = 0; i < input.Count; i++)
+            {
+                string cucrrentString = input[i];//.TrimStart();
+                if (cucrrentString.Contains('-'))
+                {
+                    string[] tokens = cucrrentString.Split('-');
+                    string nameOfgame = tokens[0];//.TrimStart();
+                    decimal price = decimal.Parse(tokens[1]);
+                    if (!game.ContainsKey(nameOfgame))
+                    {
+                        game[nameOfgame] = price;
+                    }
+                    else
+                    {
+                        game[nameOfgame] += price;
+                    }
+                }
+                else if (cucrrentString.Contains(':'))
+                {
+                    string[] tokens = cucrrentString.Split(':');
+                    string nameOfgame = tokens[0];//.TrimStart();
+                    string nameOfDLC = tokens[1];
+                    if (game.ContainsKey(nameOfgame))
+                    {
+                        gameDLC[nameOfgame] = nameOfDLC;
+                        game[nameOfgame] *= 1.2m;
+                    }
+                }
+            }
+            foreach (var item in gameDLC)
+            {
+                var nameofGame = item.Key;
+                if (game.ContainsKey(nameofGame))
+                {
+                    game[nameofGame] *= 0.5m;
+                }
+            }
+
+            foreach (var item in game.OrderBy(x => x.Value))
+            {
+                var gameDLCs = item.Key;
+                var price = item.Value;
+                if (gameDLC.ContainsKey(gameDLCs))
+                {
+                    var currentDLC = gameDLC[gameDLCs];
+                    Console.WriteLine($"{gameDLCs} - {currentDLC} - {price:f2}");
+                }
+            }
+            foreach (var gamem in game.OrderByDescending(x => x.Value))
+            {
+                var gameDLCs = gamem.Key;
+                var price = gamem.Value;
+                if (!gameDLC.ContainsKey(gameDLCs))
+                {
+                    Console.WriteLine("{0} - {1:f2}", gameDLCs, price * 0.8m);
+                }
+            }
+        }
+    }
+}
