@@ -1,0 +1,75 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+
+namespace _02.Activation_Keys
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int newNumber = 0;
+            List<string> input = Regex.Split(Console.ReadLine(), @"&").ToList();
+            List<string> newString = new List<string>();
+            string newStringss = string.Empty;
+            for (int i = 0; i < input.Count; i++)
+            {
+                string currentString = input[i];
+                var pattern = @"^([A-Za-z\d]{25})|([A-Za-z\d]{16})$";
+                string sorted = string.Empty;
+                Match collectionnn = Regex.Match(currentString, pattern);
+
+                newStringss = collectionnn.ToString().ToUpper();
+                if (collectionnn.Length > 0)
+                {
+                    string validKey = collectionnn.ToString().ToUpper();
+                    
+                    for (int z = 0; z < validKey.Length; z++)
+                    {
+                        char currentChar = validKey[z];
+                        if (char.IsDigit(currentChar))
+                        {
+                            int charToInt = (int)(currentChar - '0');
+                            newNumber = 9 - charToInt;
+
+
+                            
+                            sorted += (char)(newNumber+48);
+                        }
+                        else
+                        {
+                            sorted += currentChar;
+                        }
+                    }
+                    if (collectionnn.Length == 16)
+                    {
+                        for (int x = 4; x < newStringss.Length; x++)
+                        {
+
+                            sorted = sorted.Insert(x, "-");
+                            x = x + 4;
+                        }
+                    }
+                    if (collectionnn.Length == 25)
+                    {
+                        for (int x = 5; x < newStringss.Length; x++)
+                        {
+
+                            sorted = sorted.Insert(x, "-");
+                            x = x + 5;
+                        }
+                    }
+                    newString.Add(sorted);
+
+                }
+
+            }
+            Console.Write(string.Join(", ", newString));
+            Console.WriteLine();
+        }
+
+    }
+}
